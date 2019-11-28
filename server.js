@@ -56,7 +56,7 @@ function run(string, callback) {
     let [areaString, dateString] = inputArray;
 
     let area = searcher.search(areaString);
-    if (area.length == 0) {
+    if (area.length == 0 || area.length > 2) {
         callback('');
         return;
     }
@@ -84,7 +84,8 @@ function run(string, callback) {
 function scrape(url, callback) {
     request(url, (err, response, body) => {
         if (err) {
-            throw err
+            callback('')
+            return;
         }
 
         const $ = cheerio.load(body, {
