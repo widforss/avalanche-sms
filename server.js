@@ -48,25 +48,35 @@ app.listen(8000, () => {
 
 function run(string, callback) {
     let inputArray = string.split(' ');
-    if (inputArray.length == 0 || inputArray > 2) return;
+    if (inputArray.length == 0 || inputArray > 2) {
+        callback('');
+        return;
+    }
 
     let [areaString, dateString] = inputArray;
 
     let area = searcher.search(areaString);
-    if (area.length == 0) return;
+    if (area.length == 0) {
+        callback('');
+        return;
+    }
 
     let date = new Date(dateString);
-    if (isNaN(date)) {
-        date = new Date();
+    if (!isNaN(date)) {
+        date = [
+            date.getFullYear(),
+            date.getMonth() + 1,
+            date.getDate(),
+        ].join('-');
+    } else {
+        date = null
     }
-    date = [
-        date.getFullYear(),
-        date.getMonth() + 1,
-        date.getDate(),
-    ].join('-');
 
     let url = 'http://www.lavinprognoser.se/oversikt-alla-omraden/' +
-        area[0].url + '/prognos/?forecastdate=' + date;
+        area[0].url + '/prognos/'
+    if (date) {
+        url += '?forecastdate=' + date;
+    }
 
     scrape(url, callback);
 }
